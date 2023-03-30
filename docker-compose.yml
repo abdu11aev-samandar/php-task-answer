@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  web:
+    container_name: web-php-task
+    image: nginx:latest
+    networks:
+      - default
+    ports:
+      - "1020:80"
+    volumes:
+      - ./:/php-task-answer
+      - ./docker/ngnix/default.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - php
+
+  php:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: php-task-answer
+    working_dir: /php-task-answer/
+    restart: always
+    networks:
+      - default
+    volumes:
+      - ./:/php-task-answer
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini:ro
+    expose:
+      - "9000"
